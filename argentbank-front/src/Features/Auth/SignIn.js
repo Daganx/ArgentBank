@@ -1,25 +1,27 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "./AuthSlice";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from './AuthSlice';
+import { useNavigate } from 'react-router-dom';
 
-export default function SignInForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const auth = useSelector((state) => state.auth);
+  const { error, status } = useSelector((state) => state.auth);
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password }))
-      .unwrap()
-      .then((data) => {
-        navigate("/profile");
-      })
-      .catch((error) => {
-        console.error("Login failed:", error);
-      });
+    const result = await dispatch(loginUser({ email, password }));
+
+    // Vérifie si la connexion a réussi et redirige vers le profil
+    if (loginUser.fulfilled.match(result)) {
+      if (result.payload.body && result.payload.body.user) {
+        const userId = result.payload.body.user._id;
+        navigate(`/profile/${userId}`);
+      }
+    }
   };
 
   return (
@@ -29,32 +31,35 @@ export default function SignInForm() {
       <form onSubmit={handleSubmit}>
         <div className="input-wrapper">
           <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+          <input 
+            type="text" 
+            id="username" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
           />
         </div>
         <div className="input-wrapper">
           <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+          <input 
+            type="password" 
+            id="password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
           />
         </div>
         <div className="input-remember">
           <input type="checkbox" id="remember-me" />
           <label htmlFor="remember-me">Remember me</label>
         </div>
-        <button type="submit" className="sign-in-button">
-          Sign In
+        <button className="sign-in-button" type="submit" disabled={status === 'loading'}>
+          {status === 'loading' ? 'Signing in...' : 'Sign In'}
         </button>
       </form>
-      {auth.status === "loading" && <p>Loading...</p>}
-      {auth.error && <p className="error">{auth.error}</p>}
+      {status === 'failed' && error && (
+        <div className="error-message">
+          {error.message ? error.message : 'An error occurred'}
+        </div>
+      )}
     </section>
   );
 }

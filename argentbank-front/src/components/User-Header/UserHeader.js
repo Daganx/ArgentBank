@@ -1,14 +1,15 @@
 import React from "react";
 
-export default function UserHeader() {
+const UserHeader = ({ user }) => {
   return (
-    <div className="header">
+    <header className="header">
       <h1>
-        Welcome back
-        <br />
-        Tony Jarvis
+        Welcome Back <br />{" "}
+        {user ? `${user.firstName} ${user.lastName}` : "Guest"}
       </h1>
       <button className="edit-button">Edit Name</button>
-    </div>
+    </header>
   );
-}
+};
+
+export default UserHeader;
