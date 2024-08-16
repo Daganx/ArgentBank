@@ -4,6 +4,8 @@ import SignIn from "./pages/signIn.js";
 import Profile from "./pages/profile.js";
 import Footer from "./components/Footer/Footer.js";
 import Navbar from "./components/Navbar/Navbar.js";
+import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoutes.js";
+import Page404 from "./pages/error404.js";
 import "./App.css";
 
 function App() {
@@ -13,7 +15,16 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<SignIn />} />
-        <Route path="/profile/:id" element={<Profile />} />
+        <Route
+          path="/profile/:id"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/404" element={<Page404 />} />
+        <Route path="*" element={<Page404 />} />
       </Routes>
       <Footer />
     </Router>

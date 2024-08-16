@@ -4,8 +4,7 @@ const UserHeader = ({ user }) => {
   return (
     <header className="header">
       <h1>
-        Welcome Back <br />{" "}
-        {user ? `${user.firstName} ${user.lastName}` : "Guest"}
+        Welcome Back <br /> {`${user.firstName} ${user.lastName}`}
       </h1>
       <button className="edit-button">Edit Name</button>
     </header>

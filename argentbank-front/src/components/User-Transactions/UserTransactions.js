@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function UserTransactions({user}) {
+export default function UserTransactions({ user }) {
   return (
     <>
       <h2 className="sr-only">Accounts of {user}</h2>
