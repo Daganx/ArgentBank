@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import { fetchUserProfile } from "../Features/Auth/AuthSlice";
-import { useNavigate, useParams } from "react-router-dom";
 import UserHeader from "../components/User-Header/UserHeader";
 import UserTransactions from "../components/User-Transactions/UserTransactions";
 
@@ -14,16 +14,13 @@ const Profile = () => {
   useEffect(() => {
     if (token && !user) {
       dispatch(fetchUserProfile());
-    }
-  }, [dispatch, token, user]);
-
-  useEffect(() => {
-    if (user && userId && userId !== user._id) {
+    } else if (user && user._id !== userId) {
+      // Redirige vers la page 404 si l'ID dans l'URL ne correspond pas à l'utilisateur connecté
       navigate("/404", { replace: true });
     }
-  }, [user, userId, navigate]);
+  }, [dispatch, token, user, userId, navigate]);
 
-  if (status === "loading" || !user) {
+  if (status === "loading") {
     return <div>Loading...</div>;
   }
 
@@ -32,10 +29,12 @@ const Profile = () => {
   }
 
   return (
-    <main className="main bg-dark user-page">
-      <UserHeader user={user} />
-      <UserTransactions />
-    </main>
+    <>
+      <main className="main bg-dark user-page">
+        <UserHeader user={user} />
+        <UserTransactions />
+      </main>
+    </>
   );
 };
 
