@@ -20,7 +20,7 @@ paths:
         - Bearer: []
       tags:
         - Transactions
-      summary: Retrieve all transactions for the current month grouped by account
+      summary: Retrieve all transactions for the current month 
       description: >
         This endpoint retrieves all transactions for the current month, grouped by account.
       parameters:
@@ -85,47 +85,6 @@ paths:
         '500':
           description: Internal server error
 
-  /user/profile/transactions/{transactionId}/type:
-    patch:
-      security:
-        - Bearer: []
-      tags:
-        - Transactions
-      summary: Update transaction type
-      description: >
-        This endpoint allows updating the type of a specific transaction.
-      parameters:
-        - in: path
-          name: transactionId
-          required: true
-          type: string
-          description: The ID of the transaction to update
-        - in: header
-          name: Authorization
-          required: true
-          type: string
-          description: Token JWT
-        - in: body
-          name: body
-          description: The new transaction type
-          required: true
-          schema:
-            type: object
-            properties:
-              type:
-                type: string
-                description: New transaction type (e.g., Electronic, Cash)
-                example: Electronic
-      responses:
-        '200':
-          description: Transaction type updated successfully
-        '400':
-          description: Invalid request
-        '404':
-          description: Transaction not found
-        '500':
-          description: Internal server error
-
   /user/profile/transactions/{transactionId}/category:
     patch:
       security:
@@ -151,12 +110,8 @@ paths:
           description: The new transaction category
           required: true
           schema:
-            type: object
-            properties:
-              category:
-                type: string
-                description: New transaction category (e.g., Food, Transport)
-                example: Food
+            $ref: '#/definitions/CategoryDetails'
+
       responses:
         '200':
           description: Transaction category updated successfully
@@ -164,6 +119,42 @@ paths:
           description: Invalid request
         '404':
           description: Transaction not found
+        '500':
+          description: Internal server error
+
+    delete:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions
+      summary: Delete transaction category
+      description: >
+        This endpoint allows deleting the category of a specific transaction.
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: The ID of the transaction for which the category will be deleted
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+          description: Token JWT
+      responses:
+        '200':
+          description: Transaction category deleted successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Confirmation message that the category was deleted
+                example: "Transaction category deleted successfully."
+        '400':
+          description: Invalid request
+        '404':
+          description: Transaction or category not found
         '500':
           description: Internal server error
 
@@ -192,12 +183,8 @@ paths:
           description: The new transaction notes
           required: true
           schema:
-            type: object
-            properties:
-              notes:
-                type: string
-                description: New transaction notes
-                example: "The New Note"
+            $ref: '#/definitions/NoteDetails'
+
       responses:
         '200':
           description: Transaction notes updated successfully
@@ -205,6 +192,42 @@ paths:
           description: Invalid request
         '404':
           description: Transaction not found
+        '500':
+          description: Internal server error
+
+    delete:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions
+      summary: Delete transaction notes
+      description: >
+        This endpoint allows deleting the notes of a specific transaction.
+      parameters:
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+          description: The ID of the transaction for which the notes will be deleted
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+          description: Token JWT
+      responses:
+        '200':
+          description: Transaction notes deleted successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Confirmation message that the notes were deleted
+                example: "Transaction notes deleted successfully."
+        '400':
+          description: Invalid request
+        '404':
+          description: Transaction or notes not found
         '500':
           description: Internal server error
 
@@ -247,16 +270,6 @@ definitions:
         type: string
         description: Any notes associated with the transaction
 
-  TypeDetails:
-    type: object
-    properties:
-      id: 
-        type: string
-        description: The ID of the transaction
-      type: 
-        type: string
-        description: Any type associated with the transaction
-
   CategoryDetails:
     type: object
     properties:
@@ -265,7 +278,7 @@ definitions:
         description: The ID of the transaction
       category: 
         type: string
-        description: Any categor associated with the transaction
+        description: Any category associated with the transaction
 
   NoteDetails:
     type: object

@@ -11,6 +11,8 @@ const Profile = () => {
   const { userId } = useParams();
   const { user, token, status, error } = useSelector((state) => state.auth);
 
+
+  // Gestion de la redirection
   useEffect(() => {
     if (token && !user) {
       dispatch(fetchUserProfile());

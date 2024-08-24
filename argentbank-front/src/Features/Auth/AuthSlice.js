@@ -29,6 +29,7 @@ export const fetchUserProfile = createAsyncThunk(
     try {
       const response = await axios.post(
         "http://localhost:3001/api/v1/user/profile",
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -65,7 +66,8 @@ export const updateUserProfile = createAsyncThunk(
     }
   }
 );
-// AJOUTER COMMENTAIRES
+
+// Initialisation du store, état initial
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -74,6 +76,7 @@ const authSlice = createSlice({
     status: "idle",
     error: null,
   },
+  // Reducers de déconnexion
   reducers: {
     logout(state) {
       state.user = null;
@@ -83,16 +86,19 @@ const authSlice = createSlice({
       console.log("User logged out. State reset to initial values.");
     },
   },
+  // Gestion des différents états
   extraReducers: (builder) => {
     builder
+      // Gestion de l'état de la requête de connexion de l'utilisateur
       .addCase(loginUser.pending, (state) => {
         state.status = "loading";
         console.log("Login request pending...");
       })
+      // Cas si connexion réussie
       .addCase(loginUser.fulfilled, (state, action) => {
         console.log("Full response payload:", action.payload);
         state.status = "succeeded";
-        // Vérifie que les données existent et sont bien structurées
+        // Vérification de la structure des données
         if (action.payload.body) {
           state.user = action.payload.body.user;
           state.token = action.payload.body.token; // État du token
@@ -102,10 +108,11 @@ const authSlice = createSlice({
           console.error("Unexpected response structure:", action.payload);
         }
       })
+      // Cas si connexion échoue
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
-        // Réinitialiser user et token en cas d'échec
+        // Réinitialise user et token en cas d'échec
         state.user = null;
         state.token = null;
         console.error("Login failed with error:", state.error);
@@ -115,34 +122,31 @@ const authSlice = createSlice({
         state.status = "loading";
         console.log("Fetch user profile request pending...");
       })
+      // Cas si le profil est bien récupéré
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
-        console.log(
-          "Full response payload from profile fetch:",
-          action.payload
-        );
+        console.log("Full response payload from profile fetch:", action.payload);
         state.status = "succeeded";
         // Vérifie que les données existent et sont bien structurées
         if (action.payload.body) {
           state.user = action.payload.body.user;
-          console.log(
-            "User profile fetched successfully. User data:",
-            state.user
-          );
+          console.log("User profile fetched successfully. User data:", state.user);
         } else {
           console.error("Unexpected response structure:", action.payload);
         }
       })
+      // Cas si la récupération du profil échoue
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
         console.error("Failed to fetch user profile with error:", state.error);
       })
+      // Cas si la mise à jour du profil réussie
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         // Mettre à jour les informations de l'utilisateur dans le state
-        state.user.firstName = action.payload.firstName;
-        state.user.lastName = action.payload.lastName;
+        state.user = { ...state.user, ...action.payload };
         state.status = "succeeded";
       })
+      // Cas si la mise à jour du profil échoue
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.error = action.payload;
         state.status = "failed";
