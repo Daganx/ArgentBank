@@ -65,7 +65,7 @@ export const updateUserProfile = createAsyncThunk(
     }
   }
 );
-
+// AJOUTER COMMENTAIRES
 const authSlice = createSlice({
   name: "auth",
   initialState: {

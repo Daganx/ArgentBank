@@ -27,9 +27,9 @@ const UserHeader = ({ user }) => {
   return (
     <header className="header">
       <h1>
-        Welcome Back <br />
+        <p className="welcome">Welcome Back</p> <br />
         {isEditing ? (
-          <>
+          <div className="input-container">
             <input
               type="text"
               value={firstName}
@@ -40,13 +40,13 @@ const UserHeader = ({ user }) => {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
-          </>
+          </div>
         ) : (
           `${user.firstName} ${user.lastName}`
         )}
       </h1>
       {isEditing ? (
-        <div>
+        <div className="button-container">
           <button className="save-button" onClick={handleSaveClick}>
             Save
           </button>
