@@ -1,9 +1,8 @@
 import React from "react";
 
-export default function UserTransactions({ user }) {
+export default function UserTransactions() {
   return (
     <>
-      <h2 className="sr-only">Accounts of {user}</h2>
       <section className="account">
         <div className="account-content-wrapper">
           <h3 className="account-title">Argent Bank Checking (x8349)</h3>
